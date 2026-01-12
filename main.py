@@ -4,8 +4,6 @@ import subprocess
 import threading
 import time
 import os
-from pathlib import Path
-from datetime import datetime
 
 
 class TodoMonitor:
@@ -75,7 +73,7 @@ class TodoMonitor:
         self.count_label.pack(side=tk.LEFT, padx=10)
 
         # Create treeview with scrollbar
-        tree_frame = ttk.frame(self.root, padding="10")
+        tree_frame = ttk.Frame(self.root, padding="10")
         tree_frame.pack(fill=tk.BOTH, expand=True)
 
         # Scrollbars
@@ -314,7 +312,7 @@ class TodoMonitor:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
             self.status_label.config(text="Status: Error")
 
-    def on_double_click(self, event):
+    def on_double_click(self, _event):
         item = self.tree.selection()[0]
         values = self.tree.item(item, "values")
 
