@@ -1,19 +1,20 @@
 # TodoWatch
 
-A lightweight GUI application that monitors your codebase for TODO and FIXME comments in real-time.
+A lightweight GUI application that monitors your codebase for TODO and FIXME
+comments in real-time.
 
 ## Features
 
-- 🔍 **Real-time Monitoring** - Automatically detects file changes and updates the task list
-- 📝 **TODO & FIXME Tracking** - Scans your entire project for TODO and FIXME comments
+- 🔍 **Real-time Monitoring** - Automatically detects file changes and updates
+  the task list
+- 📝 **TODO & FIXME Tracking** - Scans your entire project for TODO and FIXME
+  comments
 - 🎨 **Color-coded Display** - TODOs in blue, FIXMEs in red for easy distinction
-- 🚫 **Customizable Ignore List** - Skip directories like `node_modules`, `.git`, etc.
-- 📋 **Quick Copy** - Double-click any item to copy the file path and line number
+- 🚫 **Customizable Ignore List** - Skip directories like `node_modules`,
+  `.git`, etc.
+- 📋 **Quick Copy** - Double-click any item to copy the file path and line
+  number
 - ⚡ **Fast Scanning** - Powered by ripgrep for lightning-fast searches
-
-## Screenshots
-
-![TodoWatch Interface](screenshot.png)
 
 ## Requirements
 
@@ -42,7 +43,8 @@ apt install ripgrep
 choco install ripgrep
 ```
 
-Or download from [ripgrep releases](https://github.com/BurntSushi/ripgrep/releases)
+Or download from [ripgrep
+releases](https://github.com/BurntSushi/ripgrep/releases)
 
 ### 2. Clone and Run
 
@@ -57,10 +59,14 @@ No additional Python dependencies required - uses only standard library!
 ## Usage
 
 1. **Select Directory** - Click "Browse" and choose your project directory
-2. **Start Monitoring** - Click "Start Monitoring" to enable real-time file watching
-3. **View Tasks** - All TODO and FIXME comments appear in the list with file location and line number
-4. **Copy Location** - Double-click any task to copy its file path and line number to clipboard
-5. **Customize Ignores** - Click "Ignore List" to add or remove ignored directories
+2. **Start Monitoring** - Click "Start Monitoring" to enable real-time file
+   watching
+3. **View Tasks** - All TODO and FIXME comments appear in the list with file
+   location and line number
+4. **Copy Location** - Double-click any task to copy its file path and line
+   number to clipboard
+5. **Customize Ignores** - Click "Ignore List" to add or remove ignored
+   directories
 
 ### Default Ignored Directories
 
@@ -75,7 +81,9 @@ No additional Python dependencies required - uses only standard library!
 
 ## How It Works
 
-TodoWatch uses ripgrep to efficiently search for TODO and FIXME patterns in your codebase. It monitors file modification timestamps and automatically rescans when changes are detected (checks every 2 seconds).
+TodoWatch uses ripgrep to efficiently search for TODO and FIXME patterns in
+your codebase. It monitors file modification timestamps and automatically
+rescans when changes are detected (checks every 2 seconds).
 
 The application recognizes these comment patterns:
 
@@ -100,4 +108,5 @@ MIT License - feel free to use this in your projects!
 ## Acknowledgments
 
 - Built with Python's tkinter for the GUI
-- Powered by [ripgrep](https://github.com/BurntSushi/ripgrep) for blazing-fast text search
+- Powered by [ripgrep](https://github.com/BurntSushi/ripgrep) for blazing-fast
+  text search
