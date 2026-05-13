@@ -7,16 +7,16 @@ import os
 
 
 class TodoMonitor:
-    def __init__(self, root):
-        self.root = root
+    def __init__(self, root: tk.Tk):
+        self.root: tk.Tk = root
         self.root.title("TODO/FIXME Monitor")
         self.root.geometry("900x600")
 
-        self.directory = None
+        self.directory: str | None = None
         self.monitoring = False
-        self.monitor_thread = None
-        self.file_timestamps = {}
-        self.ignore_patterns = [
+        self.monitor_thread: threading.Thread | None = None
+        self.file_timestamps: dict[str, float] = {}
+        self.ignore_patterns: list[str] = [
             "node_modules",
             ".git",
             "__pycache__",
@@ -34,13 +34,13 @@ class TodoMonitor:
 
     def setup_ui(self):
         # Top frame for controls
-        control_frame = ttk.Frame(self.root, padding="10")
+        control_frame: ttk.Frame = ttk.Frame(self.root, padding="10")
         control_frame.pack(fill=tk.X)
 
         # Directory selection
         ttk.Label(control_frame, text="Directory:").pack(side=tk.LEFT, padx=5)
 
-        self.dir_label = ttk.Label(
+        self.dir_label: ttk.Label = ttk.Label(
             control_frame, text="No directory selected", relief=tk.SUNKEN, width=50
         )
         self.dir_label.pack(side=tk.LEFT, padx=5)
@@ -49,7 +49,7 @@ class TodoMonitor:
             side=tk.LEFT, padx=5
         )
 
-        self.toggle_btn = ttk.Button(
+        self.toggle_btn: ttk.Button = ttk.Button(
             control_frame, text="Start Monitoring", command=self.toggle_monitoring
         )
         self.toggle_btn.pack(side=tk.LEFT, padx=5)
@@ -63,28 +63,28 @@ class TodoMonitor:
         ).pack(side=tk.LEFT, padx=5)
 
         # Status label
-        status_frame = ttk.Frame(self.root, padding="5")
+        status_frame: ttk.Frame = ttk.Frame(self.root, padding="5")
         status_frame.pack(fill=tk.X)
 
-        self.status_label = ttk.Label(status_frame, text="Status: Idle")
+        self.status_label: ttk.Label = ttk.Label(status_frame, text="Status: Idle")
         self.status_label.pack(side=tk.LEFT, padx=10)
 
-        self.count_label = ttk.Label(status_frame, text="Total: 0")
+        self.count_label: ttk.Label = ttk.Label(status_frame, text="Total: 0")
         self.count_label.pack(side=tk.LEFT, padx=10)
 
         # Create treeview with scrollbar
-        tree_frame = ttk.Frame(self.root, padding="10")
+        tree_frame: ttk.Frame = ttk.Frame(self.root, padding="10")
         tree_frame.pack(fill=tk.BOTH, expand=True)
 
         # Scrollbars
-        vsb = ttk.Scrollbar(tree_frame, orient="vertical")
+        vsb: ttk.Scrollbar = ttk.Scrollbar(tree_frame, orient="vertical")
         vsb.pack(side=tk.RIGHT, fill=tk.Y)
 
-        hsb = ttk.Scrollbar(tree_frame, orient="horizontal")
+        hsb: ttk.Scrollbar = ttk.Scrollbar(tree_frame, orient="horizontal")
         hsb.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Treeview
-        self.tree = ttk.Treeview(
+        self.tree: ttk.Treeview = ttk.Treeview(
             tree_frame,
             columns=("Type", "File", "Line", "Content"),
             show="headings",
@@ -116,7 +116,7 @@ class TodoMonitor:
         self.tree.bind("<Double-Button-1>", self.on_double_click)
 
     def show_ignore_list(self):
-        dialog = tk.Toplevel(self.root)
+        dialog: tk.Toplevel = tk.Toplevel(self.root)
         dialog.title("Ignore List")
         dialog.geometry("400x400")
         dialog.transient(self.root)
@@ -124,13 +124,13 @@ class TodoMonitor:
         ttk.Label(dialog, text="Ignored directories and patterns:", padding=10).pack()
 
         # Frame for listbox and scrollbar
-        list_frame = ttk.Frame(dialog)
+        list_frame: ttk.Frame = ttk.Frame(dialog)
         list_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
 
-        scrollbar = ttk.Scrollbar(list_frame)
+        scrollbar: ttk.Scrollbar = ttk.Scrollbar(list_frame)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        listbox = tk.Listbox(list_frame, yscrollcommand=scrollbar.set)
+        listbox: tk.Listbox = tk.Listbox(list_frame, yscrollcommand=scrollbar.set)
         listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.config(command=listbox.yview)
 
@@ -139,24 +139,24 @@ class TodoMonitor:
             listbox.insert(tk.END, pattern)
 
         # Entry and buttons frame
-        entry_frame = ttk.Frame(dialog, padding=10)
+        entry_frame: ttk.Frame = ttk.Frame(dialog, padding=10)
         entry_frame.pack(fill=tk.X)
 
-        entry = ttk.Entry(entry_frame)
+        entry: ttk.Entry = ttk.Entry(entry_frame)
         entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5))
 
         def add_pattern():
-            pattern = entry.get().strip()
+            pattern: str = entry.get().strip()
             if pattern and pattern not in self.ignore_patterns:
                 self.ignore_patterns.append(pattern)
                 listbox.insert(tk.END, pattern)
                 entry.delete(0, tk.END)
 
         def remove_pattern():
-            selection = listbox.curselection()
+            selection: list[str | int] = listbox.curselection()
             if selection:
-                idx = selection[0]
-                pattern = listbox.get(idx)
+                idx: str | int = selection[0]
+                pattern: str = listbox.get(idx)
                 self.ignore_patterns.remove(pattern)
                 listbox.delete(idx)
 
@@ -164,7 +164,7 @@ class TodoMonitor:
             side=tk.LEFT, padx=2
         )
 
-        button_frame = ttk.Frame(dialog, padding=10)
+        button_frame: ttk.Frame = ttk.Frame(dialog, padding=10)
         button_frame.pack(fill=tk.X)
 
         ttk.Button(button_frame, text="Remove Selected", command=remove_pattern).pack(
@@ -175,7 +175,7 @@ class TodoMonitor:
         )
 
     def select_directory(self):
-        directory = filedialog.askdirectory(title="Select Directory to Monitor")
+        directory: str = filedialog.askdirectory(title="Select Directory to Monitor")
         if directory:
             self.directory = directory
             self.dir_label.config(text=directory)
@@ -187,7 +187,7 @@ class TodoMonitor:
             messagebox.showwarning("No Directory", "Please select a directory first")
             return
 
-        self.monitoring = not self.monitoring
+        self.monitoring: bool = not self.monitoring
 
         if self.monitoring:
             self.toggle_btn.config(text="Stop Monitoring")
@@ -210,8 +210,8 @@ class TodoMonitor:
         if not self.directory:
             return False
 
-        changed = False
-        current_timestamps = {}
+        changed: bool = False
+        current_timestamps: dict[str, float] = {}
 
         try:
             for root_dir, dirs, files in os.walk(self.directory):
@@ -219,9 +219,9 @@ class TodoMonitor:
                 dirs[:] = [d for d in dirs if d not in self.ignore_patterns]
 
                 for file in files:
-                    filepath = os.path.join(root_dir, file)
+                    filepath: str = os.path.join(root_dir, file)
                     try:
-                        mtime = os.path.getmtime(filepath)
+                        mtime: float = os.path.getmtime(filepath)
                         current_timestamps[filepath] = mtime
 
                         if (
@@ -251,7 +251,7 @@ class TodoMonitor:
 
         try:
             # Build ripgrep command with ignore patterns
-            cmd = ["rg", "-n", "--no-heading", ".*(TODO|FIXME):.*"]
+            cmd: list[str] = ["rg", "-n", "--no-heading", ".*(TODO|FIXME):.*"]
 
             # Add glob patterns to exclude ignored directories
             for pattern in self.ignore_patterns:
@@ -260,32 +260,34 @@ class TodoMonitor:
             cmd.append(self.directory)
 
             # Run ripgrep command
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+            result: subprocess.CompletedProcess[str] = subprocess.run(
+                cmd, capture_output=True, text=True, timeout=10
+            )
 
-            lines = result.stdout.strip().split("\n")
-            count = 0
+            lines: list[str] = result.stdout.strip().split("\n")
+            count: int = 0
 
             for line in lines:
                 if not line:
                     continue
 
                 # Parse ripgrep output: filepath:line_number:content
-                parts = line.split(":", 2)
+                parts: list[str] = line.split(":", 2)
                 if len(parts) >= 3:
-                    filepath = parts[0]
-                    line_num = parts[1]
-                    content = parts[2].strip()
+                    filepath: str = parts[0]
+                    line_num: str = parts[1]
+                    content: str = parts[2].strip()
 
                     # Determine type
                     if "TODO:" in content or "TODO :" in content:
-                        tag_type = "TODO"
+                        tag_type: str = "TODO"
                     elif "FIXME:" in content or "FIXME :" in content:
-                        tag_type = "FIXME"
+                        tag_type: str = "FIXME"
                     else:
-                        tag_type = "OTHER"
+                        tag_type: str = "OTHER"
 
                     # Get relative path
-                    rel_path = os.path.relpath(filepath, self.directory)
+                    rel_path: str = os.path.relpath(filepath, self.directory)
 
                     # Insert into tree
                     self.tree.insert(
@@ -297,7 +299,9 @@ class TodoMonitor:
                     count += 1
 
             self.count_label.config(text=f"Total: {count}")
-            status_text = "Status: Monitoring..." if self.monitoring else "Status: Idle"
+            status_text: str = (
+                "Status: Monitoring..." if self.monitoring else "Status: Idle"
+            )
             self.status_label.config(text=status_text)
 
         except FileNotFoundError:
@@ -312,21 +316,23 @@ class TodoMonitor:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
             self.status_label.config(text="Status: Error")
 
-    def on_double_click(self, _event):
-        item = self.tree.selection()[0]
-        values = self.tree.item(item, "values")
+    def on_double_click(self, _):
+        item: str = self.tree.selection()[0]
+        values: tuple[str, ...] = tuple(
+            str(item) for item in self.tree.item(item, "values")
+        )
 
         # Copy file path and line number to clipboard
         if len(values) >= 3:
-            filepath = os.path.join(self.directory, values[1])
-            line_num = values[2]
-            copy_text = f"{filepath}:{line_num}"
+            filepath: str = os.path.join(str(self.directory), values[1])
+            line_num: int = int(values[2])
+            copy_text: str = f"{filepath}:{line_num}"
             self.root.clipboard_clear()
             self.root.clipboard_append(copy_text)
             self.status_label.config(text=f"Copied: {copy_text}")
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = TodoMonitor(root)
+    root: tk.Tk = tk.Tk()
+    app: TodoMonitor = TodoMonitor(root)
     root.mainloop()
